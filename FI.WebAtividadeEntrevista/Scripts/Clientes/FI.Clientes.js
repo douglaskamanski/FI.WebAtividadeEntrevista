@@ -6,14 +6,15 @@ $(document).ready(function () {
             url: urlPost,
             method: "POST",
             data: {
+                "CPF": $(this).find("#CPF").val(),
                 "NOME": $(this).find("#Nome").val(),
-                "CEP": $(this).find("#CEP").val(),
-                "Email": $(this).find("#Email").val(),
                 "Sobrenome": $(this).find("#Sobrenome").val(),
                 "Nacionalidade": $(this).find("#Nacionalidade").val(),
+                "CEP": $(this).find("#CEP").val(),
                 "Estado": $(this).find("#Estado").val(),
                 "Cidade": $(this).find("#Cidade").val(),
                 "Logradouro": $(this).find("#Logradouro").val(),
+                "Email": $(this).find("#Email").val(),
                 "Telefone": $(this).find("#Telefone").val()
             },
             error:

@@ -2,14 +2,15 @@
 $(document).ready(function () {
     if (obj) {
         $('#formCadastro #Nome').val(obj.Nome);
-        $('#formCadastro #CEP').val(obj.CEP);
-        $('#formCadastro #Email').val(obj.Email);
         $('#formCadastro #Sobrenome').val(obj.Sobrenome);
+        $('#formCadastro #CPF').val(obj.CPF);
         $('#formCadastro #Nacionalidade').val(obj.Nacionalidade);
-        $('#formCadastro #Estado').val(obj.Estado);
+        $('#formCadastro #CEP').val(obj.CEP);
         $('#formCadastro #Cidade').val(obj.Cidade);
+        $('#formCadastro #Estado').val(obj.Estado);
         $('#formCadastro #Logradouro').val(obj.Logradouro);
         $('#formCadastro #Telefone').val(obj.Telefone);
+        $('#formCadastro #Email').val(obj.Email);
     }
 
     $('#formCadastro').submit(function (e) {
@@ -19,6 +20,7 @@ $(document).ready(function () {
             url: urlPost,
             method: "POST",
             data: {
+                "CPF": $(this).find("#CPF").val(),
                 "NOME": $(this).find("#Nome").val(),
                 "CEP": $(this).find("#CEP").val(),
                 "Email": $(this).find("#Email").val(),

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FI.WebAtividadeEntrevista.Models.Validations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,7 +13,15 @@ namespace WebAtividadeEntrevista.Models
     public class ClienteModel
     {
         public long Id { get; set; }
-        
+
+        /// <summary>
+        /// CPF
+        /// </summary>
+        [Required]
+        [RegularExpression(@"^\d{3}\.\d{3}\.\d{3}-\d{2}$", ErrorMessage = "CPF no formato válido")]
+        [CPFValidator(ErrorMessage = "CPF inválido")]
+        public string CPF { get; set; }
+
         /// <summary>
         /// CEP
         /// </summary>
@@ -66,6 +75,5 @@ namespace WebAtividadeEntrevista.Models
         /// Telefone
         /// </summary>
         public string Telefone { get; set; }
-
     }    
 }
