@@ -115,7 +115,7 @@ namespace WebAtividadeEntrevista.Controllers
                     if (model.Beneficiarios.Any(b => b.Id != beneficiario.Id && b.CPF == beneficiario.CPF))
                     {
                         Response.StatusCode = 400;
-                        return Json("Dois CPF em uso para um mesmo beneficiário");
+                        return Json("Dois ou mais beneficiários com mesmo CPF para um mesmo cliente");
                     }
                 }
             }
