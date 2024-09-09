@@ -1,4 +1,7 @@
-﻿namespace FI.WebAtividadeEntrevista.Models
+﻿using FI.WebAtividadeEntrevista.Models.Validations;
+using System.ComponentModel.DataAnnotations;
+
+namespace FI.WebAtividadeEntrevista.Models
 {
     /// <summary>
     /// Classe de Modelo de Beneficiario
@@ -13,6 +16,8 @@
         /// <summary>
         /// CPF
         /// </summary>
+        [RegularExpression(@"^\d{3}\.\d{3}\.\d{3}-\d{2}$", ErrorMessage = "CPF no formato válido")]
+        [CPFValidator(ErrorMessage = "CPF inválido")]
         public string CPF { get; set; }
 
         /// <summary>

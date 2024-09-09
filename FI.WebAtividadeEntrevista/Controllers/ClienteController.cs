@@ -38,10 +38,22 @@ namespace WebAtividadeEntrevista.Controllers
                 return Json(string.Join("<br>", erros));
             }
 
-            if (bo.VerificarExistencia(model.CPF, model.Id)) 
-            { 
+            if (bo.VerificarExistencia(model.CPF, model.Id))
+            {
                 Response.StatusCode = 400;
                 return Json("Esse CPF já em uso por outro cliente");
+            }
+
+            if (model.Beneficiarios != null)
+            {
+                foreach (var beneficiario in model.Beneficiarios)
+                {
+                    if (model.Beneficiarios.Any(b => b.Id != beneficiario.Id && b.CPF == beneficiario.CPF))
+                    {
+                        Response.StatusCode = 400;
+                        return Json("Dois CPF em uso para um mesmo beneficiário");
+                    }
+                }
             }
 
             model.Id = bo.Incluir(new Cliente()
@@ -96,6 +108,18 @@ namespace WebAtividadeEntrevista.Controllers
                 return Json("Esse CPF já em uso por outro cliente");
             }
 
+            if (model.Beneficiarios != null)
+            {
+                foreach (var beneficiario in model.Beneficiarios)
+                {
+                    if (model.Beneficiarios.Any(b => b.Id != beneficiario.Id && b.CPF == beneficiario.CPF))
+                    {
+                        Response.StatusCode = 400;
+                        return Json("Dois CPF em uso para um mesmo beneficiário");
+                    }
+                }
+            }
+
             bo.Alterar(new Cliente()
             {
                 Id = model.Id,
@@ -120,7 +144,8 @@ namespace WebAtividadeEntrevista.Controllers
                 if (model.Beneficiarios == null)
                 {
                     boBeneficiario.ExcluirTodosPorCliente(model.Id);
-                } else
+                }
+                else
                 {
                     foreach (var beneficiario in listaBeneficiarios)
                     {
@@ -144,7 +169,9 @@ namespace WebAtividadeEntrevista.Controllers
                             Nome = beneficiario.Nome,
                             IdCliente = model.Id
                         });
-                    } else {
+                    }
+                    else
+                    {
                         boBeneficiario.Alterar(new Beneficiario()
                         {
                             Id = beneficiario.Id,
@@ -170,7 +197,7 @@ namespace WebAtividadeEntrevista.Controllers
             {
                 BoBeneficiario boBeneficiario = new BoBeneficiario();
                 IEnumerable<Beneficiario> listaBeneficiarios = boBeneficiario.ListarPorCliente(id);
-                
+
                 model = new ClienteModel()
                 {
                     Id = cliente.Id,
