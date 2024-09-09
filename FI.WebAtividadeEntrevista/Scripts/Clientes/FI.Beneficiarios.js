@@ -60,7 +60,7 @@ function adicionarBeneficiario() {
         tabela.rows[index].cells[1].innerText = cpf;
         tabela.rows[index].cells[2].innerText = nome;
         tabela.rows[index].cells[3].innerText = nlinha;
-        tabela.rows[index].cells[4].innerHTML = `<button id="btnAlterarBene" class="btn btn-xs btn-primary" onClick="valorizaInputBeneficiario(${idBene},'${cpf}','${nome}',${nlinha});">Alterar</button>     <button id="btnExcluirBene" class="btn btn-xs btn-primary" onClick="this.parentNode.parentNode.remove();">Excluir</button>`;;
+        tabela.rows[index].cells[4].innerHTML = `<button id="btnAlterarBene" class="btn btn-xs btn-primary" onClick="valorizaInputBeneficiario(${idBene},'${cpf}','${nome}',${nlinha});">Alterar</button>     <button id="btnExcluirBene" class="btn btn-xs btn-primary" onClick="this.parentNode.parentNode.remove(); document.getElementById('idBene').value = 0; document.getElementById('nlinha').value = 0; document.getElementById('CPFBene').value = ''; document.getElementById('NomeBene').value = '';">Excluir</button>`;;
 
         document.getElementById("idBene").value = 0;
         document.getElementById("nlinha").value = 0;
@@ -96,7 +96,7 @@ function adicionarBeneficiarioTabela(id, cpf, nome, nlinha) {
     celulaCpf.textContent = cpf;
     celulaNome.textContent = nome;
     celulanlinha.textContent = nlinha;
-    celulaBtnExcluir.innerHTML = `<button id="btnAlterarBene" class="btn btn-xs btn-primary" onClick="valorizaInputBeneficiario(${id},'${cpf}','${nome}',${nlinha});">Alterar</button>     <button id="btnExcluirBene" class="btn btn-xs btn-primary" onClick="this.parentNode.parentNode.remove();">Excluir</button>`;
+    celulaBtnExcluir.innerHTML = `<button id="btnAlterarBene" class="btn btn-xs btn-primary" onClick="valorizaInputBeneficiario(${id},'${cpf}','${nome}',${nlinha});">Alterar</button>     <button id="btnExcluirBene" class="btn btn-xs btn-primary" onClick="this.parentNode.parentNode.remove(); document.getElementById('idBene').value = 0; document.getElementById('nlinha').value = 0; document.getElementById('CPFBene').value = ''; document.getElementById('NomeBene').value = '';">Excluir</button>`;
 }
 
 function valorizaInputBeneficiario(id, cpf, nome, nlinha) {
