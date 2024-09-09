@@ -7,7 +7,7 @@ $(document).ready(function () {
             method: "POST",
             data: {
                 "CPF": $(this).find("#CPF").val(),
-                "Beneficiarios": listaDeBeneficiarios(),
+                "Beneficiarios": listaDeBeneficiarios(0),
                 "NOME": $(this).find("#Nome").val(),
                 "Sobrenome": $(this).find("#Sobrenome").val(),
                 "Nacionalidade": $(this).find("#Nacionalidade").val(),

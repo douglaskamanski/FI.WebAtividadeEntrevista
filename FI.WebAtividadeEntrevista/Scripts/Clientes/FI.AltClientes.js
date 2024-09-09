@@ -22,7 +22,7 @@ $(document).ready(function () {
             method: "POST",
             data: {
                 "CPF": $(this).find("#CPF").val(),
-                "Beneficiarios": listaDeBeneficiarios(),
+                "Beneficiarios": listaDeBeneficiarios(obj.Id),
                 "NOME": $(this).find("#Nome").val(),
                 "CEP": $(this).find("#CEP").val(),
                 "Email": $(this).find("#Email").val(),

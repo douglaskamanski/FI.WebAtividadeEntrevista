@@ -2,15 +2,24 @@ $(document).ready(function () {
     $('#btnBeneficiario').click(function (e) {
         e.preventDefault();
 
+        document.getElementById("idBene").value = 0;
+        document.getElementById("nlinha").value = 0;
+        document.getElementById("CPFBene").value = '';
+        document.getElementById("NomeBene").value = '';
+
         $("#modalBeneficiarios").modal();
     });
 
     $('#btnIncluirBene').click(function (e) {
         adicionarBeneficiario();
     });
+
+    $('#btnAlterarBene').click(function valorizaInputBeneficiario(id, cpf, nome, nlinha) { });
 })
 
 function adicionarBeneficiario() {
+    let idBene = document.getElementById("idBene").value
+    let nlinha = document.getElementById("nlinha").value;
     let cpf = document.getElementById("CPFBene").value;
     let nome = document.getElementById("NomeBene").value;
 
@@ -19,37 +28,82 @@ function adicionarBeneficiario() {
         return;
     }
 
-    if (verificaCPFExiste(cpf)) {
-        alert('CPF em uso por outro beneficiario!');
-        return;
-    }
-
     if (nome.trim() === '') {
         alert('Nome vazio!');
         return;
     }
 
-    adicionarBeneficiarioTabela(0, cpf, nome, 0);
+    const tabela = document.getElementById('tabBene');
+    let encontrouCPF = false;
+    let nlinhaEncontrou = 0;
+    let quantidaesLinhas = 0;
 
-    document.getElementById("CPFBene").value = '';
-    document.getElementById("NomeBene").value = '';
+    for (let i = 0; i < tabela.rows.length; i++) {
+        for (let j = 0; j < tabela.rows[i].cells.length; j++) {
+            if (tabela.rows[i].cells[1].innerText === cpf) {
+                nlinhaEncontrou = tabela.rows[i].cells[3].innerText;
+                encontrouCPF = true;
+            }
+        }
+        quantidaesLinhas = i;
+    }
+
+    if (encontrouCPF && nlinhaEncontrou !== nlinha) {
+        alert('CPF em uso por outro beneficiario!');
+        return;
+    }
+
+    if (nlinha > 0) {
+        let index = nlinha;
+        index++;
+        tabela.rows[index].cells[0].innerText = idBene;
+        tabela.rows[index].cells[1].innerText = cpf;
+        tabela.rows[index].cells[2].innerText = nome;
+        tabela.rows[index].cells[3].innerText = nlinha;
+        tabela.rows[index].cells[4].innerHTML = `<button id="btnAlterarBene" class="btn btn-xs btn-primary" onClick="valorizaInputBeneficiario(${idBene},'${cpf}','${nome}',${nlinha});">Alterar</button>     <button id="btnExcluirBene" class="btn btn-xs btn-primary" onClick="this.parentNode.parentNode.remove();">Excluir</button>`;;
+
+        document.getElementById("idBene").value = 0;
+        document.getElementById("nlinha").value = 0;
+        document.getElementById("CPFBene").value = '';
+        document.getElementById("NomeBene").value = '';
+
+        return;
+    }
+
+    if (nlinha == 0) {
+        adicionarBeneficiarioTabela(0, cpf, nome, quantidaesLinhas);
+
+        document.getElementById("idBene").value = 0;
+        document.getElementById("nlinha").value = 0;
+        document.getElementById("CPFBene").value = '';
+        document.getElementById("NomeBene").value = '';
+
+        return;
+    }
 }
 
-function adicionarBeneficiarioTabela(id, cpf, nome, idCliente) {
+function adicionarBeneficiarioTabela(id, cpf, nome, nlinha) {
     let tabela = document.getElementById("tabBene").getElementsByTagName('tbody')[0];
     let novaLinha = tabela.insertRow();
 
     let celulaId = novaLinha.insertCell(0);
     let celulaCpf = novaLinha.insertCell(1);
     let celulaNome = novaLinha.insertCell(2);
-    let celulaIdCliente = novaLinha.insertCell(3);
+    let celulanlinha = novaLinha.insertCell(3);
     let celulaBtnExcluir = novaLinha.insertCell(4);
 
     celulaId.textContent = id;
     celulaCpf.textContent = cpf;
     celulaNome.textContent = nome;
-    celulaIdCliente.textContent = idCliente;
-    celulaBtnExcluir.innerHTML = `<button id="btnExcluirBene" class="btn btn-xs btn-primary" onClick="this.parentNode.parentNode.remove();">Excluir</button>`;
+    celulanlinha.textContent = nlinha;
+    celulaBtnExcluir.innerHTML = `<button id="btnAlterarBene" class="btn btn-xs btn-primary" onClick="valorizaInputBeneficiario(${id},'${cpf}','${nome}',${nlinha});">Alterar</button>     <button id="btnExcluirBene" class="btn btn-xs btn-primary" onClick="this.parentNode.parentNode.remove();">Excluir</button>`;
+}
+
+function valorizaInputBeneficiario(id, cpf, nome, nlinha) {
+    document.getElementById("idBene").value = id;
+    document.getElementById("CPFBene").value = cpf;
+    document.getElementById("NomeBene").value = nome;
+    document.getElementById("nlinha").value = nlinha;
 }
 
 function limpaModalBeneficiarios() {
@@ -60,7 +114,7 @@ function limpaModalBeneficiarios() {
     linhas.innerHTML = "";
 }
 
-function listaDeBeneficiarios() {
+function listaDeBeneficiarios(idCliente) {
     const tabela = document.getElementById('tabBene');
     let arrayValores = [];
 
@@ -70,7 +124,7 @@ function listaDeBeneficiarios() {
                 Id: parseInt(tabela.rows[i].cells[0].innerText),
                 CPF: tabela.rows[i].cells[1].innerText,
                 Nome: tabela.rows[i].cells[2].innerText,
-                IdCliente: parseInt(tabela.rows[i].cells[3].innerText)
+                IdCliente: parseInt(idCliente)
             };
             arrayValores.push(beneficiario);
             break;
@@ -81,8 +135,10 @@ function listaDeBeneficiarios() {
 }
 
 function carregaTabelaBeneficiario(listaBeneficiario) {
+    let i = 1;
     listaBeneficiario.forEach(beneficiario => {
-        adicionarBeneficiarioTabela(beneficiario.Id, beneficiario.CPF, beneficiario.Nome, beneficiario.IdCliente);
+        adicionarBeneficiarioTabela(beneficiario.Id, beneficiario.CPF, beneficiario.Nome, i);
+        i++;
     });
 }
 
