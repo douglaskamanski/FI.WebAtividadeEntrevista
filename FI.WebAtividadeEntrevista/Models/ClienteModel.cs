@@ -1,4 +1,5 @@
-﻿using FI.WebAtividadeEntrevista.Models.Validations;
+﻿using FI.AtividadeEntrevista.DML;
+using FI.WebAtividadeEntrevista.Models.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,6 +22,8 @@ namespace WebAtividadeEntrevista.Models
         [RegularExpression(@"^\d{3}\.\d{3}\.\d{3}-\d{2}$", ErrorMessage = "CPF no formato válido")]
         [CPFValidator(ErrorMessage = "CPF inválido")]
         public string CPF { get; set; }
+
+        public IEnumerable<Beneficiario> Beneficiarios { get; set; }
 
         /// <summary>
         /// CEP

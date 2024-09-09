@@ -11,6 +11,7 @@ $(document).ready(function () {
         $('#formCadastro #Logradouro').val(obj.Logradouro);
         $('#formCadastro #Telefone').val(obj.Telefone);
         $('#formCadastro #Email').val(obj.Email);
+        carregaTabelaBeneficiario(obj.Beneficiarios);
     }
 
     $('#formCadastro').submit(function (e) {
@@ -21,6 +22,7 @@ $(document).ready(function () {
             method: "POST",
             data: {
                 "CPF": $(this).find("#CPF").val(),
+                "Beneficiarios": listaDeBeneficiarios(),
                 "NOME": $(this).find("#Nome").val(),
                 "CEP": $(this).find("#CEP").val(),
                 "Email": $(this).find("#Email").val(),

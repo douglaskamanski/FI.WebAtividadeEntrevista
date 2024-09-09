@@ -26,6 +26,7 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Incluir(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
 
             if (!this.ModelState.IsValid)
             {
@@ -57,14 +58,27 @@ namespace WebAtividadeEntrevista.Controllers
                 Telefone = model.Telefone
             });
 
-            return Json("Cadastro efetuado com sucesso");
+            if (model.Beneficiarios != null)
+            {
+                foreach (var beneficiario in model.Beneficiarios)
+                {
+                    var IdBeneficiario = boBeneficiario.Incluir(new Beneficiario()
+                    {
+                        CPF = beneficiario.CPF,
+                        Nome = beneficiario.Nome,
+                        IdCliente = model.Id
+                    });
+                }
+            }
 
+            return Json("Cadastro efetuado com sucesso");
         }
 
         [HttpPost]
         public JsonResult Alterar(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
 
             if (!this.ModelState.IsValid)
             {
@@ -97,6 +111,51 @@ namespace WebAtividadeEntrevista.Controllers
                 Telefone = model.Telefone
             });
 
+            IEnumerable<Beneficiario> listaBeneficiarios = boBeneficiario.ListarPorCliente(model.Id);
+
+            //se a lista do front veio vazia e tiver lista no back -> apaga todos
+            //se tiver na lista do back e nao tiver do front -> apaga um
+            if (listaBeneficiarios.Count() > 0)
+            {
+                if (model.Beneficiarios == null)
+                {
+                    boBeneficiario.ExcluirTodosPorCliente(model.Id);
+                } else
+                {
+                    foreach (var beneficiario in listaBeneficiarios)
+                    {
+                        if (!model.Beneficiarios.Any(b => b.Id == beneficiario.Id))
+                        {
+                            boBeneficiario.Excluir(beneficiario.Id);
+                        }
+                    }
+                }
+            }
+
+            if (model.Beneficiarios != null)
+            {
+                foreach (var beneficiario in model.Beneficiarios)
+                {
+                    if (beneficiario.Id == 0)
+                    {
+                        var IdBeneficiario = boBeneficiario.Incluir(new Beneficiario()
+                        {
+                            CPF = beneficiario.CPF,
+                            Nome = beneficiario.Nome,
+                            IdCliente = model.Id
+                        });
+                    } else {
+                        boBeneficiario.Alterar(new Beneficiario()
+                        {
+                            Id = beneficiario.Id,
+                            CPF = beneficiario.CPF,
+                            Nome = beneficiario.Nome,
+                            IdCliente = beneficiario.IdCliente
+                        });
+                    }
+                }
+            }
+
             return Json("Cadastro alterado com sucesso");
         }
 
@@ -109,6 +168,9 @@ namespace WebAtividadeEntrevista.Controllers
 
             if (cliente != null)
             {
+                BoBeneficiario boBeneficiario = new BoBeneficiario();
+                IEnumerable<Beneficiario> listaBeneficiarios = boBeneficiario.ListarPorCliente(id);
+                
                 model = new ClienteModel()
                 {
                     Id = cliente.Id,
@@ -121,10 +183,9 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = cliente.Nacionalidade,
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
-                    Telefone = cliente.Telefone
+                    Telefone = cliente.Telefone,
+                    Beneficiarios = listaBeneficiarios
                 };
-
-
             }
 
             return View(model);
